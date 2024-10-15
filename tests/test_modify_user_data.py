@@ -1,7 +1,7 @@
 import requests
 import pytest
 import allure
-from data import Urls, StatusMessage
+from data import URL, StatusMessage, Endpoint
 from helpers import Helpers
 
 
@@ -12,7 +12,7 @@ class TestChangeUserData:
         helper = Helpers()
         token = helper.get_user_token()
         name_update = {"name": "Tester"}
-        response_patch = requests.patch(Urls.url_user, headers={'Authorization': token}, data=name_update)
+        response_patch = requests.patch(f'{URL}{Endpoint.user}', headers={'Authorization': token}, data=name_update)
 
         assert 200 == response_patch.status_code and StatusMessage.TEXT_UPDATE_NAME_200 in response_patch.text
 
@@ -21,7 +21,7 @@ class TestChangeUserData:
         helper = Helpers()
         token = helper.get_user_token()
         email_update = {"email": "sam200@gmail.com"}
-        response_patch = requests.patch(Urls.url_user, headers={'Authorization': token}, data=email_update)
+        response_patch = requests.patch(f'{URL}{Endpoint.user}', headers={'Authorization': token}, data=email_update)
 
         assert 200 == response_patch.status_code and StatusMessage.TEXT_UPDATE_EMAIL_200 in response_patch.text
 
@@ -30,7 +30,7 @@ class TestChangeUserData:
         helper = Helpers()
         token = helper.get_user_token()
         user_change = {"password": "praktikum*"}
-        response_patch = requests.patch(Urls.url_user, headers={'Authorization': token}, data=user_change)
+        response_patch = requests.patch(f'{URL}{Endpoint.user}', headers={'Authorization': token}, data=user_change)
 
         assert 200 == response_patch.status_code and StatusMessage.TEXT_UPDATE_PASSWORD_200 in response_patch.text
 
@@ -39,6 +39,6 @@ class TestChangeUserData:
                              [{"name": "Test"}, {"email": "sam@gmail.com"}, {"password": "yandex*"}])
     def test_update_user_data_no_authorization(self, create_and_cleanup_user, data_change):
         user_update = data_change
-        response = requests.patch(Urls.url_user, data=user_update)
+        response = requests.patch(f'{URL}{Endpoint.user}', data=user_update)
 
         assert 401 == response.status_code and StatusMessage.TEXT_UNAUTHORISED_USER_UPDATE in response.text

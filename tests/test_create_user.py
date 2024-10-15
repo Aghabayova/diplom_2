@@ -3,7 +3,7 @@ import allure
 import pytest
 import random
 from data import UserData
-from data import Urls, StatusMessage
+from data import URL, StatusMessage, Endpoint
 from faker import Faker
 
 faker = Faker()
@@ -18,13 +18,13 @@ class TestCreateUser:
             "password": f"{random.randint(100000, 1000000)}",
             "name": faker.name()
         }
-        response = requests.post(Urls.url_create_user, data=user)
+        response = requests.post(f'{URL}{Endpoint.create_user}', data=user)
         assert 200 == response.status_code and StatusMessage.TEXT_SUCCESS_200 in response.text
 
     @allure.title('Create duplicate user')
     def test_create_duplicate_user(self, create_and_cleanup_user):
         user = UserData.data_register
-        response = requests.post(Urls.url_create_user, data=user)
+        response = requests.post(f'{URL}{Endpoint.create_user}', data=user)
 
         assert 403 == response.status_code and StatusMessage.TEXT_CREATE_403 in response.text
 
@@ -32,6 +32,6 @@ class TestCreateUser:
     @pytest.mark.parametrize('user_data', UserData.user_data)
     def test_create_user_with_invalid_data(self, user_data):
         user = user_data
-        response = requests.post(Urls.url_create_user, data=user)
+        response = requests.post(f'{URL}{Endpoint.create_user}', data=user)
 
         assert 403 == response.status_code and StatusMessage.TEXT_CREATE_INV_403 in response.text
